@@ -1,5 +1,5 @@
 const MIN_RANGE = 1;
-const MAX_RANGE = 65536;
+const MAX_RANGE = 65_536;
 
 function getRandomUint16Value() {
   const uint16 = new Uint16Array(1);
@@ -29,4 +29,38 @@ function getRandomInt(min = MIN_RANGE, max = MAX_RANGE) {
   return min + (value % range);
 }
 
-console.log(getRandomInt());
+/////////////////////////// TESTS ///////////////////////////
+const ITERATIONS = 100;
+const TEST_ARRAY_SIZE = 5000;
+
+function calculateAverage(array) {
+  var total = 0;
+  var count = 0;
+
+  array.forEach((item) => {
+    total += item;
+    count++;
+  });
+
+  return total / count;
+}
+
+const results = [];
+const divider = TEST_ARRAY_SIZE / 100;
+const emptyArray = new Array(TEST_ARRAY_SIZE).fill(0);
+
+for (let i = 0; i < ITERATIONS; i++) {
+  const arrayWithGeneratedValues = emptyArray.map(getRandomInt);
+  const arrayOfUniqueValues = [...new Set(arrayWithGeneratedValues)];
+
+  const uniqueValues = arrayOfUniqueValues.length;
+  const percentageChanceToGenerateDuplicateValue = 100 - uniqueValues / divider;
+
+  results.push(percentageChanceToGenerateDuplicateValue);
+}
+
+const averageChance = calculateAverage(results);
+const formattedAverageChanceValue = averageChance.toFixed(1);
+const message = `${formattedAverageChanceValue}% change to generate duplicate value in the group of ${TEST_ARRAY_SIZE} elements.`;
+
+document.body.innerText = message;
